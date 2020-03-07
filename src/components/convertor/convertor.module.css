@@ -1,0 +1,20 @@
+.list {
+	width: 420px;
+}
+.item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.item > * {
+	width: 30%
+}
+.unit {
+	color: blue;
+}
+.value {
+
+}
+.field {
+
+}
