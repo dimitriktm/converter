@@ -1,5 +1,4 @@
 import React, {Component, Fragment} from 'react';
-
 import {
 	Container,
 	Table,
@@ -14,36 +13,88 @@ import './convertor.css';
 *
 * Real time table of measurements where you can input value and see converted value in all units of table
 */
-const options = [
-  { key: '.com', text: '.com', value: '.com' },
-  { key: '.net', text: '.net', value: '.net' },
-  { key: '.org', text: '.org', value: '.org' },
-];
-const tableOptions = [
-  { key: 'length', text: 'Length', value: 'length' },
-  { key: 'time', text: 'Time', value: 'time' },
-]
 export class Convertor extends Component {
-	state = {}
+	state = {selectedTable: 'length'};
+	tablesDropdown = [
+		{key: 'length', text: 'Length', value: 'length'},
+		{key: 'time', text: 'Time', value: 'time'}
+	];
+	tables = {
+		length: {
+			getListOfUnits: function() {
+				return [
+					{abbr: 'mm', fullName: 'Milimeters'},
+					{abbr: 'cm', fullName: 'Centimeters'},
+					{abbr: 'km', fullName: 'KiloMeters'}
+				]
+			}
+		},
+		time: {
+			getListOfUnits: function() {
+				return [
+					{abbr: 's', fullName: 'Seconds'},
+					{abbr: 'm', fullName: 'Minutes'},
+					{abbr: 'h', fullName: 'Hours'}
+				]
+			}
+		}
+	}
+
+	getListOfUnits() {
+		const {selectedTable} = this.state;
+		const {tables} = this;
+
+
+		let listOfUnits = new Array();
+
+		tables[selectedTable].getListOfUnits().forEach(unit => {
+			listOfUnits.push(
+				{
+					key: unit.abbr,
+					text: unit.fullName,
+					value: unit.abbr
+				}
+			)
+		})
+
+		return listOfUnits;
+	}
+
+	onTableSelect(event, { value }) {
+		this.setState({
+			selectedTable: value
+		});
+	}
+	onValueChange({ target: { value } }) {}
 	render() {
+		const {
+			tablesDropdown
+		} = this;
+		const {
+			selectedTable
+		} = this.state;
+
+		const listOfUnits = this.getListOfUnits();
+		const defaultValue = listOfUnits[1].value;
+		const dropdownLabel = <Dropdown className='purple' defaultValue={defaultValue} options={listOfUnits} />;
 		return (
-			<div class='wrapper'>
+			<div className='wrapper'>
 				<Container text>
-					<Grid>
+					<Grid columns='equal'>
 						<Grid.Row>
 							<Grid.Column>
-							<Dropdown className='label' fluid defaultValue='length' options={tableOptions} />
+							<Dropdown onChange={this.onTableSelect.bind(this)} className='label purple' fluid defaultValue={selectedTable} options={tablesDropdown} />
 							</Grid.Column>
 						</Grid.Row>
 						<Grid.Row>
-							<Grid.Column width={12}>
+							<Grid.Column>
 								<Input
-									label={<Dropdown className='purple' defaultValue='.com' options={options} />}
+									label={dropdownLabel}
 									labelPosition='right'
 									placeholder='Value'
 									size='mini'
 									fluid
-
+									onChange={this.onValueChange.bind(this)}
 								/>
 							</Grid.Column>
 							<Grid.Column>
@@ -54,14 +105,12 @@ export class Convertor extends Component {
 					<Table definition>
 						<Table.Body>
 						  <Table.Row>
-							<Table.Cell>reset rating</Table.Cell>
-							<Table.Cell>None</Table.Cell>
-							<Table.Cell>Resets rating to default value</Table.Cell>
+							<Table.Cell>Millimeters</Table.Cell>
+							<Table.Cell>300</Table.Cell>
 						  </Table.Row>
 						  <Table.Row>
-							<Table.Cell>set rating</Table.Cell>
-							<Table.Cell>rating (integer)</Table.Cell>
-							<Table.Cell>Sets the current star rating to specified value</Table.Cell>
+							<Table.Cell>Kilometers</Table.Cell>
+							<Table.Cell>200</Table.Cell>
 						  </Table.Row>
 						</Table.Body>
 					</Table>
