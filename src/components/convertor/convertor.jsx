@@ -15,18 +15,62 @@ import convert from 'convert-units'
 * Real time table of measurements where you can input value and see converted value in all units of table
 */
 export class Convertor extends Component {
-	state = {selectedTable: '', table: [], unit: '', value: 1};
-
-	/** data */
-	getListOfUnits() {
-		return convert().list(this.state.selectedTable);
+	state = {
+		measurament: 'length',
+		convertedUnits: [],
+		unit: 'mm',
+		value: 1
+	};
+	/** set table of units with default value */
+	componentDidMount() {
+		const {measurament, unit, value} = this.state;
+		const convertedUnits = this.convert(measurament, value, unit);
+		this.setState({convertedUnits});
 	}
-	getListOfMeasures() {}
+
+	/**
+	 * Get list of converted units
+	 * */
+	convert(measurament, value, unit) {
+		let results,
+			unitsList;
+
+		if(!value || !unit)
+		{
+			return;
+		}
+
+		results = new Array();
+		unitsList = convert().list(measurament);
+		for(let unitItem of unitsList)
+		{
+			results.push(
+				{
+					...unitItem,
+					value: convert(value).from(unit).to(unitItem.abbr)
+				}
+			);
+		};
+
+		return results;
+	}
+
+
+
+
+
+	/** wrappers around convert plugin to get data in specific format or specific data */
+	getDefaultUnit(measurament) {
+		return convert().list(measurament)[0].abbr;
+	}
 	getDropdownListOfUnits() {
 		let unitsList,
 			dropdownUnitsList;
+		const {
+			measurament
+		} = this.state;
 
-		unitsList = convert().list(this.state.selectedTable);
+		unitsList = convert().list(measurament);
 		dropdownUnitsList = new Array();
 		for(let unit of unitsList) {
 			dropdownUnitsList.push(
@@ -58,88 +102,58 @@ export class Convertor extends Component {
 
 		return dropdownMeasuresList;
 	}
-	/* Handlers */
+
+
 
 	/**
-	* when user selects table we change measurement table and set unit to first
-	* unit in measurament table
-	*/
-	onTableSelect(event, { value }) {
-		this.setState({
-			selectedTable: value,
-			unit: convert().list(value)[0].abbr
-		});
-	}
-	onValueChange({ target: { value } }) {
-		this.setState(
-			{
-				value: value
-			}
-		)
-	}
-	onUnitChange(event, { value }) {
-		this.setState(
-			{
-				unit: value
-			}
-		)
-	}
-	onConvert() {
-		let results;
+	 * Set selected measurament
+	 * and set converted units with default value of default unit
+	 * */
+	onMeasuramentSelect(event, { value }) {
+		let defaultValue,
+			defaultUnit,
+			convertedUnits;
 
-		results = this.convertValue(this.state.value, this.state.unit)
-		this.setState(
-			{
-				table: results
-			}
-		)
-	}
-	convertValue(value, unit) {
-		if(!value || !unit) {return false;}
-		let results,
-			unitsList;
-
-		results = new Array();
-		unitsList = this.getListOfUnits();
-
-		for(let unit of unitsList)
-		{
-			results.push(
-				{
-					value: convert(this.state.value).from(this.state.unit).to(unit.abbr),
-					...unit
-				}
-			)
-		};
-
-		return results;
-	}
-	componentDidMount() {
-		let defaultUnit,
-			defaultValue,
-			defaultSelectedTable,
-			defaultTable;
-
-		defaultUnit = 'mm';
 		defaultValue = 1;
-		defaultSelectedTable = 'length';
-		defaultTable = this.convertValue(defaultValue, defaultUnit);
+		defaultUnit = this.getDefaultUnit(value);
+		convertedUnits = this.convert(value, defaultValue, defaultUnit);
 
 		this.setState({
-			selectedTable: defaultSelectedTable,
-			table: defaultTable,
+			measurament: value,
+			convertedUnits: convertedUnits,
 			unit: defaultUnit,
 			value: defaultValue
 		});
-
 	}
+	/**
+	 * Set value to state
+	 * */
+	// todo highlight input about error that value must be a number
+	onValueChange({ target: { value } }) {
+		if(isNaN(parseFloat(value))) {
+			throw new Error('Value must be an integer');
+		}
+		this.setState({value});
+	}
+	/**
+	 * Set unit to state
+	 * */
+	onUnitChange(event, { value }) {
+		this.setState({unit: value});
+	}
+	/**
+	 * Convert value
+	 * */
+	onConvert() {
+		let results;
+
+		results = this.convert(this.state.measurament, this.state.value, this.state.unit);
+
+		this.setState({convertedUnits: results,});
+	}
+
 	render() {
-		const {
-			tablesDropdown
-		} = this;
-		const {
-			selectedTable
-		} = this.state;
+		const {measurament, convertedUnits} = this.state;
 		const unitsList = this.getDropdownListOfUnits();
 		const dropdownLabel = <Dropdown onChange={this.onUnitChange.bind(this)} scrolling className='purple' value={this.state.unit} options={unitsList}/>;
 		return (
@@ -148,7 +162,7 @@ export class Convertor extends Component {
 					<Grid columns='equal'>
 						<Grid.Row>
 							<Grid.Column>
-							<Dropdown onChange={this.onTableSelect.bind(this)} className='label purple' fluid scrolling value={selectedTable} options={this.getDropdownMeasuresList()} />
+							<Dropdown onChange={this.onMeasuramentSelect.bind(this)} className='label purple' fluid scrolling value={measurament} options={this.getDropdownMeasuresList()} />
 							</Grid.Column>
 						</Grid.Row>
 						<Grid.Row>
@@ -167,11 +181,11 @@ export class Convertor extends Component {
 							</Grid.Column>
 						</Grid.Row>
 					</Grid>
+
 					<Table definition>
 						<Table.Body>
-
-							{this.state.table.map(({ plural, value }) =>
-								<Table.Row key={plural}>
+							{convertedUnits.map(({ plural, value }, index) =>
+								<Table.Row key={plural + index}>
 									<Table.Cell>{ plural }</Table.Cell>
 									<Table.Cell>{ value }</Table.Cell>
 								</Table.Row>
@@ -183,3 +197,14 @@ export class Convertor extends Component {
 		);
 	}
 };
+
+
+/*
+* On Create selects displays default table and units with default value 1
+* On table select repeats above
+*
+*
+*
+*
+*
+* */
