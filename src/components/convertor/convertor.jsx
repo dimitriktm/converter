@@ -86,7 +86,7 @@ export class Convertor extends Component {
    * */
   onValueChange({ target: { value } }) {
     if (isNaN(parseFloat(value))) {
-      throw new Error("Value must be an integer");
+      throw new Error("Value must be an number");
     }
     this.setState({ value });
   }
