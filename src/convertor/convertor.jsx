@@ -85,9 +85,6 @@ export class Convertor extends Component {
    * Set value to state
    * */
   onValueChange({ target: { value } }) {
-    if (isNaN(parseFloat(value))) {
-      throw new Error("Value must be an number");
-    }
     this.setState({ value });
   }
 
@@ -111,7 +108,7 @@ export class Convertor extends Component {
   }
 
   render() {
-    const { measurament, convertedUnits } = this.state;
+    const { measurament, convertedUnits, value } = this.state;
     return (
       <div className="wrapper">
         <Container text>
@@ -122,6 +119,7 @@ export class Convertor extends Component {
             onUnitChange={this.onUnitChange.bind(this)}
             onConvert={this.onConvert.bind(this)}
             selectedUnit={this.state.unit}
+            unitValue={value}
           />
           <ConvertorTable convertedUnits={convertedUnits} />
         </Container>
