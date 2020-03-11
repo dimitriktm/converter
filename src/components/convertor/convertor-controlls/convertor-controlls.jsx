@@ -22,7 +22,6 @@ export class ConvertorControlls extends React.Component {
 
         return dropdownUnitsList;
     }
-
     getDropdownMeasuresList() {
         let measuresList = convert().measures();
         let dropdownMeasuresList = [];
@@ -39,7 +38,6 @@ export class ConvertorControlls extends React.Component {
 
         return dropdownMeasuresList;
     }
-
     render() {
         const {
             measurament,
