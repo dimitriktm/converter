@@ -1,15 +1,16 @@
 .wrapper {
-	padding: 32px;
-	min-height: 100vh;
+    padding: 32px;
+    min-height: 100vh;
 }
+
 .container {
-	padding: 12px 32px;
-	background-color: #fff;
-	border-radius: 5px;
-};
+    padding: 12px 32px;
+    background-color: #fff;
+    border-radius: 5px;
+}
 
 
 .dropdown {
-	border-color: dodgerblue !important;
-	border: 1px solid dodgerblue !important;
+    border-color: dodgerblue !important;
+    border: 1px solid dodgerblue !important;
 }
