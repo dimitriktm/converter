@@ -1,6 +1,6 @@
 # React Measure Converter
 
-Simple app that's convertors given value of given unit to all units of selected measure
+Simple app that's converts given value of given unit to all units of selected measure
 
 ![Farmers Market Finder Demo](demo/react-converter-demo.gif)
 
