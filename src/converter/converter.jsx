@@ -7,11 +7,6 @@ import { ConverterControlls } from "./converter-controlls";
 import { Container } from "semantic-ui-react";
 import convert from "convert-units";
 
-/**
- * Controller Class representing a real time table of measurements
- *
- * Real time table of measurements where you can input value and see converted value in all units of table
- */
 export class Converter extends Component {
   /**
    * Convert from given unit to all units in measure
