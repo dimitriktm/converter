@@ -16,11 +16,6 @@ export class Convertor extends Component {
   /**
    * Convert from given unit to all units in measure
    *
-   * Cause this functionality needed in multiply places
-   * such as when component mounts, on measure change and on convert event.
-   * This functionality was isolated in static function so it can be called from
-   * any context without sideffects.
-   *
    * @param {string} measure - measure(length, mass, time, etc...)
    * @param {string or number} value - value of selected unit
    * @param {string} unit - unit to convert from
@@ -50,14 +45,14 @@ export class Convertor extends Component {
   };
 
   state = {
-    measurament: Convertor.DEFAULT_VALUES.measure,
+    selectedMeasure: Convertor.DEFAULT_VALUES.measure,
     convertedUnits: Convertor.getConvertedUnits(
       Convertor.DEFAULT_VALUES.measure,
       Convertor.DEFAULT_VALUES.value,
       Convertor.DEFAULT_VALUES.unit
     ),
-    unit: Convertor.DEFAULT_VALUES.unit,
-    value: Convertor.DEFAULT_VALUES.value
+    selectedUnit: Convertor.DEFAULT_VALUES.unit,
+    unitValue: Convertor.DEFAULT_VALUES.value
   };
   /**
    * Set selected measurament
@@ -65,61 +60,67 @@ export class Convertor extends Component {
    * */
   onMeasuramentSelect(_, { value }) {
     let selectedMeasure = value;
-    let unit = convert().list(selectedMeasure)[0].abbr;
+    let firstUnitInMeasure = convert().list(selectedMeasure)[0].abbr;
     let unitValue = 0;
     let convertedUnits = Convertor.getConvertedUnits(
       selectedMeasure,
       unitValue,
-      unit
+      firstUnitInMeasure
     );
 
     this.setState({
-      measurament: selectedMeasure,
-      convertedUnits: convertedUnits,
-      unit,
-      value: unitValue
+      selectedMeasure,
+      selectedUnit: firstUnitInMeasure,
+      unitValue,
+      convertedUnits
     });
   }
 
   /**
-   * Set value to state
+   * Handle unit value input
    * */
   onValueChange({ target: { value } }) {
-    this.setState({ value });
+    this.setState({ unitValue: value });
   }
 
   /**
-   * Set unit to state
+   * Handle unit select
    * */
   onUnitChange(_, { value }) {
-    this.setState({ unit: value });
+    this.setState({ selectedUnit: value });
   }
 
   /**
-   * Convert value
+   * Handle convert click
    * */
   onConvert() {
-    let results = Convertor.getConvertedUnits(
-      this.state.measurament,
-      this.state.value,
-      this.state.unit
+    const { selectedMeasure, selectedUnit, unitValue } = this.state;
+    let convertedUnits = Convertor.getConvertedUnits(
+      selectedMeasure,
+      unitValue || 0,
+      selectedUnit
     );
-    this.setState({ convertedUnits: results });
+    this.setState({ convertedUnits });
   }
 
   render() {
-    const { measurament, convertedUnits, value } = this.state;
+    const {
+      selectedMeasure,
+      selectedUnit,
+      unitValue,
+      convertedUnits
+    } = this.state;
     return (
       <div className="wrapper">
         <Container text>
           <ConvertorControlls
-            measurament={measurament}
+            selectedMeasure={selectedMeasure}
+            selectedUnit={selectedUnit}
+            unitValue={unitValue}
             onMeasuramentSelect={this.onMeasuramentSelect.bind(this)}
             onValueChange={this.onValueChange.bind(this)}
             onUnitChange={this.onUnitChange.bind(this)}
             onConvert={this.onConvert.bind(this)}
-            selectedUnit={this.state.unit}
-            unitValue={value}
           />
           <ConvertorTable convertedUnits={convertedUnits} />
         </Container>

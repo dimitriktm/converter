@@ -3,9 +3,11 @@ import { Button, Dropdown, Grid, Input } from "semantic-ui-react";
 import convert from "convert-units";
 
 export class ConvertorControlls extends React.Component {
+  /** getDropdown* is helper methods to get list of value in specific format for dropdown component of semantic ui */
   getDropdownListOfUnits() {
-    const { measurament } = this.props;
-    let unitsList = convert().list(measurament);
+    const { selectedMeasure } = this.props;
+
+    let unitsList = convert().list(selectedMeasure);
     let dropdownUnitsList = [];
 
     for (let unit of unitsList) {
@@ -32,9 +34,10 @@ export class ConvertorControlls extends React.Component {
 
     return dropdownMeasuresList;
   }
+
   render() {
     const {
-      measurament,
+      selectedMeasure,
       selectedUnit,
       unitValue,
       onMeasuramentSelect,
@@ -44,20 +47,23 @@ export class ConvertorControlls extends React.Component {
     } = this.props;
     const unitsList = this.getDropdownListOfUnits();
     const measureList = this.getDropdownMeasuresList();
+
     return (
       <Grid columns="equal">
         <Grid.Row>
           <Grid.Column>
             <Dropdown
               onChange={onMeasuramentSelect}
-              className="label purple"
+              className="purple"
               fluid
               scrolling
-              value={measurament}
+              value={selectedMeasure}
               options={measureList}
+              button={true}
             />
           </Grid.Column>
         </Grid.Row>
+
         <Grid.Row>
           <Grid.Column>
             <Input
@@ -75,8 +81,10 @@ export class ConvertorControlls extends React.Component {
               value={unitValue}
               fluid
               onChange={onValueChange}
+              type={"number"}
             />
           </Grid.Column>
+
           <Grid.Column>
             <Button onClick={onConvert} size="small" className="purple">
               Convert
