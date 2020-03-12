@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Dropdown, Grid, Input } from "semantic-ui-react";
 import convert from "convert-units";
 
-export class ConvertorControlls extends React.Component {
+export class ConverterControlls extends React.Component {
   /** getDropdown* is helper methods to get list of value in specific format for dropdown component of semantic ui */
   getDropdownListOfUnits() {
     const { selectedMeasure } = this.props;

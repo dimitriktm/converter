@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import "./convertor.css";
+import "./converter.css";
 
-import { ConvertorTable } from "./convertor-table";
-import { ConvertorControlls } from "./convertor-controlls";
+import { ConverterTable } from "./converter-table";
+import { ConverterControlls } from "./converter-controlls";
 
 import { Container } from "semantic-ui-react";
 import convert from "convert-units";
@@ -12,7 +12,7 @@ import convert from "convert-units";
  *
  * Real time table of measurements where you can input value and see converted value in all units of table
  */
-export class Convertor extends Component {
+export class Converter extends Component {
   /**
    * Convert from given unit to all units in measure
    *
@@ -45,14 +45,14 @@ export class Convertor extends Component {
   };
 
   state = {
-    selectedMeasure: Convertor.DEFAULT_VALUES.measure,
-    convertedUnits: Convertor.getConvertedUnits(
-      Convertor.DEFAULT_VALUES.measure,
-      Convertor.DEFAULT_VALUES.value,
-      Convertor.DEFAULT_VALUES.unit
+    selectedMeasure: Converter.DEFAULT_VALUES.measure,
+    convertedUnits: Converter.getConvertedUnits(
+      Converter.DEFAULT_VALUES.measure,
+      Converter.DEFAULT_VALUES.value,
+      Converter.DEFAULT_VALUES.unit
     ),
-    selectedUnit: Convertor.DEFAULT_VALUES.unit,
-    unitValue: Convertor.DEFAULT_VALUES.value
+    selectedUnit: Converter.DEFAULT_VALUES.unit,
+    unitValue: Converter.DEFAULT_VALUES.value
   };
   /**
    * Set selected measurament
@@ -62,7 +62,7 @@ export class Convertor extends Component {
     let selectedMeasure = value;
     let firstUnitInMeasure = convert().list(selectedMeasure)[0].abbr;
     let unitValue = 0;
-    let convertedUnits = Convertor.getConvertedUnits(
+    let convertedUnits = Converter.getConvertedUnits(
       selectedMeasure,
       unitValue,
       firstUnitInMeasure
@@ -95,7 +95,7 @@ export class Convertor extends Component {
    * */
   onConvert() {
     const { selectedMeasure, selectedUnit, unitValue } = this.state;
-    let convertedUnits = Convertor.getConvertedUnits(
+    let convertedUnits = Converter.getConvertedUnits(
       selectedMeasure,
       unitValue || 0,
       selectedUnit
@@ -113,7 +113,7 @@ export class Convertor extends Component {
     return (
       <div className="wrapper">
         <Container text>
-          <ConvertorControlls
+          <ConverterControlls
             selectedMeasure={selectedMeasure}
             selectedUnit={selectedUnit}
             unitValue={unitValue}
@@ -122,7 +122,7 @@ export class Convertor extends Component {
             onUnitChange={this.onUnitChange.bind(this)}
             onConvert={this.onConvert.bind(this)}
           />
-          <ConvertorTable convertedUnits={convertedUnits} />
+          <ConverterTable convertedUnits={convertedUnits} />
         </Container>
       </div>
     );

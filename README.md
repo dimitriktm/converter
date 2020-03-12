@@ -1,13 +1,13 @@
-# React Measure Convert
+# React Measure Converter
 
-Simple app thats convertor given value of unit to another unit within measure
+Simple app that's convertors given value of given unit to all units of selected measure
 
-![Farmers Market Finder Demo](demo/react-convertor-demo.gif)
+![Farmers Market Finder Demo](demo/react-converter-demo.gif)
 
 ## Usage
 
 ```
-git clone https://github.com/dimitriktm/convertor
+git clone https://github.com/dimitriktm/converter
 npm i
 npm start
 ```

@@ -2,11 +2,11 @@ import React from "react";
 import "./App.css";
 
 /* Components */
-import { Convertor } from "./convertor";
+import { Converter } from "./converter";
 export function App() {
   return (
     <div className="App">
-      <Convertor />
+      <Converter />
     </div>
   );
 }
